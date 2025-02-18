@@ -1,7 +1,7 @@
 "use client";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { stayPixel } from "@/app/fonts/font";
-import { useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -11,10 +11,16 @@ import ContinueButton from "@/app/components/molecules/ContinueButton";
 
 import { queryGenerator } from "@/app/helpers/helper";
 import styles from "@/app/assets/styles/Index.module.css";
-import CategorySelection from "./components/organisms/CategorySelection";
-import MainMenu from "./components/organisms/MainMenu";
-
-export default function Home() {
+import CategoryChoice from "./CategorySelection";
+const Menu = ({
+  firstStep,
+  secondStep,
+  thirdStep,
+}: {
+  firstStep: ReactNode;
+  secondStep: ReactNode;
+  thirdStep: ReactNode;
+}) => {
   const router = useRouter();
   const [steps, setSteps] = useState([
     {
@@ -109,22 +115,67 @@ export default function Home() {
       </Box>
       <AnimatePresence>
         {steps[0].active && (
-          <MainMenu
-            onPlay={() => {
-              setOnClickedPlay(true);
-              setTimeout(() => {
-                setOnClickedPlay(false);
-              }, 100);
-              setSteps(
-                steps.map((step) => {
-                  if (step.value === "step-1")
-                    return { ...step, active: false };
-                  if (step.value === "step-2") return { ...step, active: true };
-                  return { ...step };
-                })
-              );
-            }}
-          />
+          <Flex flexDirection={"column"} alignItems={"center"}>
+            {!!score && (
+              <Box position={"absolute"} right={10} top={10}>
+                <Text color={"yellow.300"} fontSize={30} fontWeight={"bold"}>
+                  Total Score: {score}
+                </Text>
+              </Box>
+            )}
+            <motion.div
+              exit={{ scale: 0, originX: 0.5, originY: "50%" }}
+              transition={{ duration: 0.6 }}
+            >
+              <Text
+                fontSize={"6xl"}
+                className={stayPixel.className}
+                textAlign={"center"}
+                color={"white"}
+                paddingTop={20}
+                data-testid="title"
+              >
+                Trivia Quest
+              </Text>
+            </motion.div>
+            <motion.div
+              exit={{ scale: 0, originX: 0.5, originY: "50%" }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <motion.div whileTap={{ scale: 0.8 }}>
+                <Box
+                  className={stayPixel.className}
+                  backgroundColor={"white"}
+                  width={"fit-content"}
+                  paddingY={2}
+                  paddingX={4}
+                  borderRadius={10}
+                  marginTop={50}
+                  cursor={"pointer"}
+                  boxShadow={"3px 3px 3px 3px black"}
+                  _hover={{ boxShadow: "none" }}
+                  onClick={() => {
+                    setOnClickedPlay(true);
+                    setTimeout(() => {
+                      setOnClickedPlay(false);
+                    }, 100);
+                    setSteps(
+                      steps.map((step) => {
+                        if (step.value === "step-1")
+                          return { ...step, active: false };
+                        if (step.value === "step-2")
+                          return { ...step, active: true };
+                        return { ...step };
+                      })
+                    );
+                  }}
+                  data-testid="play-button"
+                >
+                  <Text fontSize={"2xl"}>Play now</Text>
+                </Box>
+              </motion.div>
+            </motion.div>
+          </Flex>
         )}
       </AnimatePresence>
       <AnimatePresence>
@@ -199,7 +250,7 @@ export default function Home() {
       </AnimatePresence>
       <AnimatePresence>
         {steps[2].active && (
-          <CategorySelection onContinue={() => goToStep("step-4")} />
+          <CategoryChoice onContinue={() => goToStep("step-4")} />
         )}
       </AnimatePresence>
       <AnimatePresence>
@@ -260,4 +311,6 @@ export default function Home() {
       {/* <Image height={540} width={360} src={GroundImage} alt="ground" /> */}
     </Box>
   );
-}
+};
+
+export default Menu;
