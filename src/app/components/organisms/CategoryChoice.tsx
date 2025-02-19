@@ -2,13 +2,15 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { stayPixel } from "@/app/fonts/font";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import StepHeader from "@/app/components/molecules/StepHeader";
 
 const CategoryChoice = ({
   onCategorySelection,
+  onSkipCategory,
 }: {
   onCategorySelection: () => void;
+  onSkipCategory: () => void;
 }) => {
   return (
     <Flex flexDirection={"column"} alignItems={"center"} paddingTop={40}>
@@ -63,7 +65,7 @@ const CategoryChoice = ({
                 fontSize={"large"}
                 cursor={"pointer"}
                 className={stayPixel.className}
-                onClick={() => {}}
+                onClick={onSkipCategory}
                 data-testid="no-button"
               >
                 No

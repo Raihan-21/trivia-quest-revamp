@@ -1,5 +1,7 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const useFetch = (url: string): [() => void, any, boolean] => {
   const [data, setData] = useState(null);

@@ -9,7 +9,7 @@ const CategoryDropdown = ({
   groupName,
   onCategoryClick,
 }: {
-  group: any;
+  group: Record<string, string[]>;
   groupName: string;
   onCategoryClick: (category: string) => void;
 }) => {
