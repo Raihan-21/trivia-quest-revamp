@@ -10,24 +10,8 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { RxReload } from "react-icons/rx";
 import { FiArrowLeft } from "react-icons/fi";
-import { Question } from "@/app/types/quiz";
-
-// export const getServerSideProps = async (context: any) => {
-//   const queryString = queryGenerator(context.query);
-//   try {
-//     const res = await axios.get(
-//       "https://the-trivia-api.com/v2/questions" + queryString
-//     );
-//     return {
-//       props: {
-//         questions: res.data,
-//       },
-//     };
-//   } catch (error) {
-//     console.log(error);
-//     // throw error;
-//   }
-// };
+import { Question, QuestionStatus } from "@/app/types/quiz";
+import Choice from "../molecules/Choice";
 
 const Quiz = ({ questions }: { questions: Question[] }) => {
   const router = useRouter();
@@ -35,9 +19,9 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [choices, setChoices] = useState<string[]>([]);
-  const [questionStatus, setQuestionStatus] = useState({
+  const [questionStatus, setQuestionStatus] = useState<QuestionStatus>({
     correctAnswer: "",
-    isChoosed: false,
+    isChosen: false,
     isCorrect: false,
   });
   const [time, setTime] = useState(0);
@@ -100,21 +84,23 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
             break;
         }
         setScore((prevState) => ({ ...prevState, hasUpdated: true }));
+
         setTimeout(() => {
           setScore((prevState) => ({ ...prevState, hasUpdated: false }));
         }, 1000);
       }
+      setTimeout(() => {
+        nextQuestion();
+        setQuestionStatus({
+          isCorrect: false,
+          isChosen: false,
+          correctAnswer: "",
+        });
+      }, 1000);
     },
     [questions, score.total, currentQuestion, searchParams]
   );
-  const revealAnswer = useCallback(
-    (choice: string) => {
-      if (choice === questions[currentQuestion].correctAnswer)
-        return "green.300";
-      return "red.500";
-    },
-    [questions, questionStatus, checkAnswer, currentQuestion]
-  );
+
   useEffect(() => {
     mixChoices();
     setTime(0);
@@ -126,17 +112,6 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
     if (time === 100) nextQuestion();
     return () => clearInterval(interval);
   }, [time]);
-  useEffect(() => {
-    if (questionStatus.isChoosed)
-      setTimeout(() => {
-        nextQuestion();
-        setQuestionStatus({
-          isCorrect: false,
-          isChoosed: false,
-          correctAnswer: "",
-        });
-      }, 1000);
-  }, [revealAnswer]);
 
   useEffect(() => {
     const highScore = localStorage.getItem("high-score");
@@ -208,36 +183,18 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
               </Text>
               <VStack gap={3}>
                 {choices.map((choice, i) => (
-                  <motion.div
-                    whileTap={{
-                      scale: questionStatus.correctAnswer === choice ? 0.8 : 1,
-                      y: questionStatus.correctAnswer !== choice ? 10 : 0,
+                  <Choice
+                    value={choice}
+                    questionStatus={questionStatus}
+                    onClick={() => {
+                      setQuestionStatus((prevState) => ({
+                        ...prevState,
+                        isChosen: true,
+                      }));
+                      checkAnswer(choice);
                     }}
                     key={i}
-                  >
-                    <Box
-                      borderRadius={10}
-                      paddingY={1}
-                      paddingX={4}
-                      backgroundColor={
-                        questionStatus.isChoosed
-                          ? revealAnswer(choice)
-                          : "white"
-                      }
-                      cursor={"pointer"}
-                      width={"fit-content"}
-                      onClick={() => {
-                        // setSelectedAnswer(choice);
-                        setQuestionStatus((prevState) => ({
-                          ...prevState,
-                          isChoosed: true,
-                        }));
-                        checkAnswer(choice);
-                      }}
-                    >
-                      <Text>{choice}</Text>
-                    </Box>
-                  </motion.div>
+                  />
                 ))}
               </VStack>
             </Box>

@@ -13,5 +13,10 @@ interface Question {
   tags: string[];
   type: string;
 }
+interface QuestionStatus {
+  correctAnswer: string;
+  isChosen: boolean;
+  isCorrect: boolean;
+}
 
-export type { Question };
+export type { Question, QuestionStatus };
