@@ -7,7 +7,7 @@ import Quiz from "../components/organisms/Quiz";
 const Page = async ({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) => {
   const queryStringValues = await searchParams;
   const queryString = queryGenerator(queryStringValues);
