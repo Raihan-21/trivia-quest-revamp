@@ -223,7 +223,7 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
                     columnGap={2}
                     cursor={"pointer"}
                     onClick={() => {
-                      router.refresh();
+                      window.location.reload();
                     }}
                   >
                     <RxReload />
