@@ -1,19 +1,18 @@
 "use client";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { stayPixel } from "@/app/fonts/font";
-import { useCallback, useEffect, useState } from "react";
+import { JSX, ReactNode, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { AnimatePresence, motion } from "framer-motion";
 import useFetch from "@/app/hooks/useFetch";
-import StepHeader from "@/app/components/molecules/StepHeader";
-import ContinueButton from "@/app/components/molecules/ContinueButton";
 
 import { queryGenerator } from "@/app/helpers/helper";
 import styles from "@/app/assets/styles/Index.module.css";
-import CategorySelection from "./components/organisms/CategorySelection";
-import MainMenu from "./components/organisms/MainMenu";
-
+import MainMenu from "@/app/components/organisms/MainMenu";
+import CategoryChoice from "@/app/components/organisms/CategoryChoice";
+import CategorySelection from "@/app/components/organisms/CategorySelection";
+import DifficultySelection from "@/app/components/organisms/DifficultySelection";
 export default function Home() {
   const router = useRouter();
   const [steps, setSteps] = useState([
@@ -75,9 +74,6 @@ export default function Home() {
     },
     [steps]
   );
-  useEffect(() => {
-    setScore(Number(localStorage.getItem("high-score")));
-  }, []);
 
   return (
     <Box
@@ -129,133 +125,32 @@ export default function Home() {
       </AnimatePresence>
       <AnimatePresence>
         {steps[1].active && (
-          <Flex flexDirection={"column"} alignItems={"center"} paddingTop={40}>
-            <motion.div exit={{ scale: 0 }} transition={{ duration: 0.5 }}>
-              <motion.div
-                initial={{ scale: 0, originX: 0.5, originY: 0.5 }}
-                animate={{ scale: 1, originX: 0.5, originY: 0.5 }}
-                transition={{ duration: 0.5, delay: 0.9 }}
-              >
-                <StepHeader text="Do you want to choose categories for your quest?" />
-              </motion.div>
-            </motion.div>
-            <motion.div
-              exit={{ scale: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-            >
-              <Flex justifyContent={"center"} columnGap={5} marginTop={10}>
-                <motion.div
-                  initial={{ scale: 0, originX: 0.5, originY: 0.5 }}
-                  animate={{ scale: 1, originX: 0.5, originY: 0.5 }}
-                  transition={{ duration: 0.2, delay: 1.5 }}
-                >
-                  <motion.div whileTap={{ scale: 0.8 }}>
-                    <Box
-                      backgroundColor={"green.300"}
-                      color={"white"}
-                      paddingY={2}
-                      paddingX={10}
-                      borderRadius={5}
-                      fontSize={"large"}
-                      cursor={"pointer"}
-                      className={stayPixel.className}
-                      onClick={() => {
-                        goToStep("step-3");
-                      }}
-                      data-testid="yes-button"
-                    >
-                      Yes
-                    </Box>
-                  </motion.div>
-                </motion.div>
-                <motion.div
-                  initial={{ scale: 0, originX: 0.5, originY: 0.5 }}
-                  animate={{ scale: 1, originX: 0.5, originY: 0.5 }}
-                  transition={{ duration: 0.2, delay: 1.8 }}
-                >
-                  <motion.div whileTap={{ scale: 0.8 }}>
-                    <Box
-                      backgroundColor={"red.500"}
-                      color={"white"}
-                      paddingY={2}
-                      paddingX={10}
-                      borderRadius={5}
-                      fontSize={"large"}
-                      cursor={"pointer"}
-                      className={stayPixel.className}
-                      onClick={() => {
-                        goToStep("step-4");
-                      }}
-                      data-testid="no-button"
-                    >
-                      No
-                    </Box>
-                  </motion.div>
-                </motion.div>
-              </Flex>
-            </motion.div>
-          </Flex>
+          <CategoryChoice
+            onCategorySelection={() => {
+              goToStep("step-3");
+            }}
+            onSkipCategory={() => goToStep("step-4")}
+          />
         )}
       </AnimatePresence>
       <AnimatePresence>
         {steps[2].active && (
-          <CategorySelection onContinue={() => goToStep("step-4")} />
+          <CategorySelection
+            selectedTags={selectedTags}
+            onCategorySelect={(category) => {
+              setSelectedTags([...selectedTags, category]);
+            }}
+            onCategoryUnselect={(tag: string) => {
+              setSelectedTags(
+                selectedTags.filter((selectedTag) => selectedTag !== tag)
+              );
+            }}
+            onContinue={() => goToStep("step-4")}
+          />
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {steps[3].active && (
-          <Flex flexDirection={"column"} alignItems={"center"} paddingTop={40}>
-            <motion.div
-              initial={{ scale: 0, originX: 0.5, originY: 0.5 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.5, delay: 1 }}
-            >
-              <StepHeader text="Select Difficulty :" />
-              <Flex
-                flexDirection={"column"}
-                alignItems={"center"}
-                rowGap={3}
-                marginTop={5}
-                marginBottom={5}
-              >
-                {difficulties.map((difficulty, i) => (
-                  <motion.div whileTap={{ scale: 0.8 }} key={i}>
-                    <Text
-                      backgroundColor={
-                        selectedDifficulty === difficulty.value
-                          ? "green.300"
-                          : "white"
-                      }
-                      paddingY={3}
-                      paddingX={10}
-                      width={"fit-content"}
-                      borderRadius={5}
-                      cursor={"pointer"}
-                      className={stayPixel.className}
-                      fontSize={20}
-                      onClick={() => {
-                        setselectedDifficulty(difficulty.value);
-                      }}
-                    >
-                      {difficulty.label}
-                    </Text>
-                  </motion.div>
-                ))}
-              </Flex>
-
-              <ContinueButton
-                onClick={() => {
-                  const params = {
-                    categories: selectedTags,
-                    difficulties: selectedDifficulty,
-                  };
-                  const queryString = queryGenerator(params);
-                  router.push(`/play` + queryString);
-                }}
-              />
-            </motion.div>
-          </Flex>
-        )}
+        {steps[3].active && <DifficultySelection selectedTags={selectedTags} />}
       </AnimatePresence>
       {/* <Image height={540} width={360} src={GroundImage} alt="ground" /> */}
     </Box>

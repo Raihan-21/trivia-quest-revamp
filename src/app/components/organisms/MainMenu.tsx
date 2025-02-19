@@ -1,13 +1,14 @@
 "use client";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { stayPixel } from "@/app/fonts/font";
-import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const MainMenu = ({ onPlay }: { onPlay: () => void }) => {
   const [score, setScore] = useState(0);
+  useEffect(() => {
+    setScore(Number(localStorage.getItem("high-score")));
+  }, []);
   return (
     <Flex flexDirection={"column"} alignItems={"center"}>
       {!!score && (

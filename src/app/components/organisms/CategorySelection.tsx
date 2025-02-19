@@ -1,5 +1,6 @@
+"use client";
 import { Flex } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import { stayPixel } from "@/app/fonts/font";
 
@@ -10,18 +11,25 @@ import useFetch from "@/app/hooks/useFetch";
 import { RxCross2 } from "react-icons/rx";
 import ContinueButton from "../molecules/ContinueButton";
 
-const CategoryChoice = async  ({ onContinue }: { onContinue: () => void }) => {
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
+const CategorySelection = ({
+  selectedTags,
+  onCategorySelect,
+  onCategoryUnselect,
+  onContinue,
+}: {
+  selectedTags: string[];
+  onCategorySelect: (tag: string) => void;
+  onCategoryUnselect: (tag: string) => void;
+  onContinue: () => void;
+}) => {
   const [fetchCategories, categoriesData, categoriesLoading] = useFetch(
     "https://the-trivia-api.com/v2/categories"
   );
 
-  await fetchCategories();
-  // useEffect(() => {
-  //   fetchCategories();
-  //   // if (categoriesData) setTags(categoriesData.slice(0, 19));
-  // }, []);
+  useEffect(() => {
+    fetchCategories();
+    // if (categoriesData) setTags(categoriesData.slice(0, 19));
+  }, []);
 
   return (
     <Flex flexDirection={"column"} alignItems={"center"} paddingTop={40}>
@@ -50,11 +58,7 @@ const CategoryChoice = async  ({ onContinue }: { onContinue: () => void }) => {
                 alignItems={"center"}
                 columnGap={2}
                 className={stayPixel.className}
-                onClick={() => {
-                  setSelectedTags(
-                    selectedTags.filter((selectedTag) => selectedTag !== tag)
-                  );
-                }}
+                onClick={() => onCategoryUnselect(tag)}
                 key={i}
               >
                 {tag.replaceAll("_", " ")} <RxCross2 />
@@ -62,15 +66,12 @@ const CategoryChoice = async  ({ onContinue }: { onContinue: () => void }) => {
             ))}
         </Flex>
         <Flex flexWrap={"wrap"} maxWidth={"500px"} columnGap={5} rowGap={3}>
-          {!categoriesLoading &&
-            categoriesData &&
+          {categoriesData &&
             Object.keys(categoriesData).map((tag: string, i: number) => (
               <CategoryDropdown
                 group={categoriesData}
                 groupName={tag}
-                onCategoryClick={(category) => {
-                  setSelectedTags([...selectedTags, category]);
-                }}
+                onCategoryClick={onCategorySelect}
                 key={i}
               />
             ))}
@@ -81,4 +82,4 @@ const CategoryChoice = async  ({ onContinue }: { onContinue: () => void }) => {
   );
 };
 
-export default CategoryChoice;
+export default CategorySelection;
