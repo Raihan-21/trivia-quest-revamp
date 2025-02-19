@@ -1,11 +1,9 @@
 "use client";
-import useFetch from "@/app/hooks/useFetch";
 import { Box, Flex, Progress, Text, VStack } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
 
-import axios from "axios";
 import { stayPixel, ubuntu } from "@/app/fonts/font";
-import { queryGenerator } from "@/app/helpers/helper";
+
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -36,7 +34,7 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
   const searchParams = useSearchParams();
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [choices, setChoices] = useState<any[]>([]);
+  const [choices, setChoices] = useState<string[]>([]);
   const [questionStatus, setQuestionStatus] = useState({
     correctAnswer: "",
     isChoosed: false,
@@ -57,7 +55,7 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
     ];
     for (let i = mixedChoices.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      let temp = mixedChoices[i];
+      const temp = mixedChoices[i];
       mixedChoices[i] = mixedChoices[j];
       mixedChoices[j] = temp;
     }
@@ -66,7 +64,7 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
       ...prevState,
       correctAnswer: questions[currentQuestion].correctAnswer,
     }));
-  }, [currentQuestion]);
+  }, [questions, currentQuestion]);
   const nextQuestion = useCallback(() => {
     if (currentQuestion === 9) {
       setSessionEnd(true);
@@ -107,15 +105,15 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
         }, 1000);
       }
     },
-    [currentQuestion]
+    [questions, score.total, currentQuestion, searchParams]
   );
   const revealAnswer = useCallback(
-    (choice: string, i: number) => {
+    (choice: string) => {
       if (choice === questions[currentQuestion].correctAnswer)
         return "green.300";
       return "red.500";
     },
-    [questionStatus, checkAnswer, currentQuestion]
+    [questions, questionStatus, checkAnswer, currentQuestion]
   );
   useEffect(() => {
     mixChoices();
@@ -148,7 +146,7 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
         (Number(highScore) + score.total).toString()
       );
     else localStorage.setItem("high-score", score.total.toString());
-  }, [sessionEnd]);
+  }, [score.total, sessionEnd]);
 
   return (
     <Box
@@ -223,7 +221,7 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
                       paddingX={4}
                       backgroundColor={
                         questionStatus.isChoosed
-                          ? revealAnswer(choice, i)
+                          ? revealAnswer(choice)
                           : "white"
                       }
                       cursor={"pointer"}

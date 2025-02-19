@@ -1,4 +1,6 @@
-const queryGenerator = (object: any) => {
+const queryGenerator = (
+  object: Record<string, string | string[] | undefined>
+) => {
   let params = "";
   const paramsArray = Object.keys(object).filter((key) => object[key]);
   paramsArray.forEach((key, i) => {

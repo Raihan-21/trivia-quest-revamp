@@ -2,7 +2,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { stayPixel } from "@/app/fonts/font";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const MainMenu = ({ onPlay }: { onPlay: () => void }) => {
   const [score, setScore] = useState(0);

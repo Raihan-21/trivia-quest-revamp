@@ -1,18 +1,17 @@
 "use client";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { stayPixel } from "@/app/fonts/font";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import StepHeader from "@/app/components/molecules/StepHeader";
 import ContinueButton from "@/app/components/molecules/ContinueButton";
 
 import { queryGenerator } from "@/app/helpers/helper";
-import styles from "@/app/assets/styles/Index.module.css";
 const DifficultySelection = ({ selectedTags }: { selectedTags: string[] }) => {
   const router = useRouter();
-  const [difficulties, setDifficulties] = useState([
+  const [difficulties] = useState([
     {
       label: "Easy",
       value: "easy",

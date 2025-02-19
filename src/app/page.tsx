@@ -1,20 +1,15 @@
 "use client";
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { stayPixel } from "@/app/fonts/font";
-import { JSX, ReactNode, useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Box } from "@chakra-ui/react";
+import { useCallback, useState } from "react";
 
 import { AnimatePresence, motion } from "framer-motion";
-import useFetch from "@/app/hooks/useFetch";
 
-import { queryGenerator } from "@/app/helpers/helper";
 import styles from "@/app/assets/styles/Index.module.css";
 import MainMenu from "@/app/components/organisms/MainMenu";
 import CategoryChoice from "@/app/components/organisms/CategoryChoice";
 import CategorySelection from "@/app/components/organisms/CategorySelection";
 import DifficultySelection from "@/app/components/organisms/DifficultySelection";
 export default function Home() {
-  const router = useRouter();
   const [steps, setSteps] = useState([
     {
       value: "step-1",
@@ -37,30 +32,9 @@ export default function Home() {
       active: false,
     },
   ]);
-  const [onClickedPlay, setOnClickedPlay] = useState(false);
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const [difficulties, setDifficulties] = useState([
-    {
-      label: "Easy",
-      value: "easy",
-    },
-    {
-      label: "Medium",
-      value: "medium",
-    },
-    {
-      label: "Hard",
-      value: "hard",
-    },
-  ]);
-
-  const [selectedDifficulty, setselectedDifficulty] = useState("");
-  const [score, setScore] = useState(0);
-  const [fetchCategories, categoriesData, categoriesLoading] = useFetch(
-    "https://the-trivia-api.com/v2/categories"
-  );
   const goToStep = useCallback(
     (name: string) => {
       setSteps(
@@ -107,10 +81,6 @@ export default function Home() {
         {steps[0].active && (
           <MainMenu
             onPlay={() => {
-              setOnClickedPlay(true);
-              setTimeout(() => {
-                setOnClickedPlay(false);
-              }, 100);
               setSteps(
                 steps.map((step) => {
                   if (step.value === "step-1")
@@ -152,7 +122,6 @@ export default function Home() {
       <AnimatePresence>
         {steps[3].active && <DifficultySelection selectedTags={selectedTags} />}
       </AnimatePresence>
-      {/* <Image height={540} width={360} src={GroundImage} alt="ground" /> */}
     </Box>
   );
 }

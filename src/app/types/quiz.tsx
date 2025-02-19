@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 interface Question {
   category: string;
   correctAnswer: string;

@@ -22,7 +22,7 @@ const CategorySelection = ({
   onCategoryUnselect: (tag: string) => void;
   onContinue: () => void;
 }) => {
-  const [fetchCategories, categoriesData, categoriesLoading] = useFetch(
+  const [fetchCategories, categoriesData] = useFetch(
     "https://the-trivia-api.com/v2/categories"
   );
 
