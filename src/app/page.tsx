@@ -7,8 +7,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import styles from "@/app/assets/styles/Index.module.css";
 import MainMenu from "@/app/components/organisms/MainMenu";
 import CategoryChoice from "@/app/components/organisms/CategoryChoice";
-import CategorySelection from "@/app/components/organisms/CategorySelection";
+
 import DifficultySelection from "@/app/components/organisms/DifficultySelection";
+import dynamic from "next/dynamic";
+
+const CategorySelection = dynamic(
+  () => import("@/app/components/organisms/CategorySelection")
+);
+
 export default function Home() {
   const [steps, setSteps] = useState([
     {
