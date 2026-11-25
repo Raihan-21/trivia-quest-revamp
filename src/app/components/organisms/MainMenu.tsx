@@ -23,6 +23,8 @@ const MainMenu = ({ onPlay }: { onPlay: () => void }) => {
         transition={{ duration: 0.6 }}
       >
         <Text
+          position={"relative"}
+          zIndex={1}
           fontSize={"6xl"}
           textAlign={"center"}
           color={"white"}

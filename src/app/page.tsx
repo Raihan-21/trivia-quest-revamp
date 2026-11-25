@@ -15,22 +15,22 @@ import { Step } from "./types";
 const CategorySelection = dynamic(
   () => import("@/app/components/organisms/CategorySelection"),
 );
+const steps: Step[] = [
+  {
+    value: "step-1",
+  },
+  {
+    value: "step-2",
+  },
+  {
+    value: "step-3",
+  },
+  {
+    value: "step-4",
+  },
+];
 
 export default function Home() {
-  const [steps, setSteps] = useState<Step[]>([
-    {
-      value: "step-1",
-    },
-    {
-      value: "step-2",
-    },
-    {
-      value: "step-3",
-    },
-    {
-      value: "step-4",
-    },
-  ]);
   const [currentStep, setCurrentStep] = useState<Step>(steps[0]);
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);

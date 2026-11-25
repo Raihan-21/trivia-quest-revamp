@@ -29,7 +29,7 @@ const CategorySelection = ({
   useEffect(() => {
     fetchCategories();
     // if (categoriesData) setTags(categoriesData.slice(0, 19));
-  }, []);
+  }, [fetchCategories]);
 
   return (
     <Flex flexDirection={"column"} alignItems={"center"} paddingTop={40}>
