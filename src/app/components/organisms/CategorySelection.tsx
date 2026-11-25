@@ -23,7 +23,7 @@ const CategorySelection = ({
   onContinue: () => void;
 }) => {
   const [fetchCategories, categoriesData] = useFetch(
-    "https://the-trivia-api.com/v2/categories"
+    "https://the-trivia-api.com/v2/categories",
   );
 
   useEffect(() => {

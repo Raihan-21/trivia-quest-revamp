@@ -10,49 +10,37 @@ import CategoryChoice from "@/app/components/organisms/CategoryChoice";
 
 import DifficultySelection from "@/app/components/organisms/DifficultySelection";
 import dynamic from "next/dynamic";
+import { Step } from "./types";
 
 const CategorySelection = dynamic(
-  () => import("@/app/components/organisms/CategorySelection")
+  () => import("@/app/components/organisms/CategorySelection"),
 );
 
 export default function Home() {
-  const [steps, setSteps] = useState([
+  const [steps, setSteps] = useState<Step[]>([
     {
       value: "step-1",
-
-      active: true,
     },
     {
       value: "step-2",
-
-      active: false,
     },
     {
       value: "step-3",
-
-      active: false,
     },
     {
       value: "step-4",
-
-      active: false,
     },
   ]);
+  const [currentStep, setCurrentStep] = useState<Step>(steps[0]);
 
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const goToStep = useCallback(
     (name: string) => {
-      setSteps(
-        steps.map((step) => {
-          if (step.value === name) {
-            return { ...step, active: true };
-          }
-          return { ...step, active: false };
-        })
-      );
+      const nextStep = steps.find((step) => step.value === name);
+      if (nextStep) setCurrentStep(nextStep);
     },
-    [steps]
+    [steps],
   );
 
   return (
@@ -84,23 +72,16 @@ export default function Home() {
         />
       </Box>
       <AnimatePresence>
-        {steps[0].active && (
+        {currentStep.value === "step-1" && (
           <MainMenu
             onPlay={() => {
-              setSteps(
-                steps.map((step) => {
-                  if (step.value === "step-1")
-                    return { ...step, active: false };
-                  if (step.value === "step-2") return { ...step, active: true };
-                  return { ...step };
-                })
-              );
+              goToStep("step-2");
             }}
           />
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {steps[1].active && (
+        {currentStep.value === "step-2" && (
           <CategoryChoice
             onCategorySelection={() => {
               goToStep("step-3");
@@ -110,7 +91,7 @@ export default function Home() {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {steps[2].active && (
+        {currentStep.value === "step-3" && (
           <CategorySelection
             selectedTags={selectedTags}
             onCategorySelect={(category) => {
@@ -118,7 +99,7 @@ export default function Home() {
             }}
             onCategoryUnselect={(tag: string) => {
               setSelectedTags(
-                selectedTags.filter((selectedTag) => selectedTag !== tag)
+                selectedTags.filter((selectedTag) => selectedTag !== tag),
               );
             }}
             onContinue={() => goToStep("step-4")}
@@ -126,7 +107,9 @@ export default function Home() {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {steps[3].active && <DifficultySelection selectedTags={selectedTags} />}
+        {currentStep.value === "step-4" && (
+          <DifficultySelection selectedTags={selectedTags} />
+        )}
       </AnimatePresence>
     </Box>
   );

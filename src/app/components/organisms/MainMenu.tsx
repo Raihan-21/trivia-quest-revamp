@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 const MainMenu = ({ onPlay }: { onPlay: () => void }) => {
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState<number>(0);
   useEffect(() => {
     setScore(Number(localStorage.getItem("high-score")));
   }, []);
@@ -24,11 +24,11 @@ const MainMenu = ({ onPlay }: { onPlay: () => void }) => {
       >
         <Text
           fontSize={"6xl"}
-          className={stayPixel.className}
           textAlign={"center"}
           color={"white"}
           paddingTop={20}
           data-testid="title"
+          className={stayPixel.className}
         >
           Trivia Quest
         </Text>
@@ -39,7 +39,6 @@ const MainMenu = ({ onPlay }: { onPlay: () => void }) => {
       >
         <motion.div whileTap={{ scale: 0.8 }}>
           <Box
-            className={stayPixel.className}
             backgroundColor={"white"}
             width={"fit-content"}
             paddingY={2}
@@ -49,6 +48,7 @@ const MainMenu = ({ onPlay }: { onPlay: () => void }) => {
             cursor={"pointer"}
             boxShadow={"3px 3px 3px 3px black"}
             _hover={{ boxShadow: "none" }}
+            className={stayPixel.className}
             onClick={onPlay}
             data-testid="play-button"
           >
