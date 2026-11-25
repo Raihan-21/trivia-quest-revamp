@@ -23,13 +23,13 @@ const CategorySelection = ({
   onContinue: () => void;
 }) => {
   const [fetchCategories, categoriesData] = useFetch(
-    "https://the-trivia-api.com/v2/categories"
+    "https://the-trivia-api.com/v2/categories",
   );
 
   useEffect(() => {
     fetchCategories();
     // if (categoriesData) setTags(categoriesData.slice(0, 19));
-  }, []);
+  }, [fetchCategories]);
 
   return (
     <Flex flexDirection={"column"} alignItems={"center"} paddingTop={40}>
