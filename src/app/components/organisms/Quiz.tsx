@@ -1,6 +1,6 @@
 "use client";
 import { Box, Flex, Progress, Text, VStack } from "@chakra-ui/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { stayPixel, ubuntu } from "@/app/fonts/font";
 
@@ -17,6 +17,7 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const intervalId = useRef<NodeJS.Timeout>(undefined);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [choices, setChoices] = useState<string[]>([]);
   const [questionStatus, setQuestionStatus] = useState<QuestionStatus>({
@@ -102,15 +103,22 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
   );
 
   useEffect(() => {
+    intervalId.current = setInterval(() => {
+      setTime((prevState) => prevState + 10);
+    }, 1000);
+    return () => clearInterval(intervalId.current);
+  }, []);
+
+  useEffect(() => {
+    if (sessionEnd) clearInterval(intervalId.current);
+  }, [sessionEnd]);
+
+  useEffect(() => {
     mixChoices();
     setTime(0);
   }, [currentQuestion]);
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(time + 10);
-    }, 1000);
     if (time === 100) nextQuestion();
-    return () => clearInterval(interval);
   }, [time]);
 
   useEffect(() => {
