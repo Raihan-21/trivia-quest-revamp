@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Box, Text } from "@chakra-ui/react";
 import { QuestionStatus } from "@/app/types/quiz";

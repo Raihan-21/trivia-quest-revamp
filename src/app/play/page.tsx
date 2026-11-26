@@ -1,5 +1,3 @@
-import React from "react";
-
 import axios from "axios";
 import { queryGenerator } from "@/app/helpers/helper";
 import Quiz from "../components/organisms/Quiz";
@@ -14,7 +12,7 @@ const Page = async ({
   let res = null;
   try {
     res = await axios.get(
-      "https://the-trivia-api.com/v2/questions" + queryString
+      "https://the-trivia-api.com/v2/questions" + queryString,
     );
   } catch (error) {
     console.log(error);

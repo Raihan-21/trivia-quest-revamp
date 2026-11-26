@@ -9,9 +9,11 @@ import StepHeader from "@/app/components/molecules/StepHeader";
 import ContinueButton from "@/app/components/molecules/ContinueButton";
 
 import { queryGenerator } from "@/app/helpers/helper";
+import { Difficulty } from "@/app/types/quiz";
+
 const DifficultySelection = ({ selectedTags }: { selectedTags: string[] }) => {
   const router = useRouter();
-  const [difficulties] = useState([
+  const [difficulties] = useState<Difficulty[]>([
     {
       label: "Easy",
       value: "easy",
@@ -26,7 +28,7 @@ const DifficultySelection = ({ selectedTags }: { selectedTags: string[] }) => {
     },
   ]);
 
-  const [selectedDifficulty, setselectedDifficulty] = useState("");
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("");
 
   return (
     <Flex flexDirection={"column"} alignItems={"center"} paddingTop={40}>
@@ -59,7 +61,7 @@ const DifficultySelection = ({ selectedTags }: { selectedTags: string[] }) => {
                 className={stayPixel.className}
                 fontSize={20}
                 onClick={() => {
-                  setselectedDifficulty(difficulty.value);
+                  setSelectedDifficulty(difficulty.value);
                 }}
               >
                 {difficulty.label}
