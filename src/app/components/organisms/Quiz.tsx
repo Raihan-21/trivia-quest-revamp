@@ -1,6 +1,6 @@
 "use client";
 import { Box, Flex, Progress, Text, VStack } from "@chakra-ui/react";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { stayPixel, ubuntu } from "@/app/fonts/font";
 
@@ -10,27 +10,27 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { RxReload } from "react-icons/rx";
 import { FiArrowLeft } from "react-icons/fi";
-import { Question, QuestionStatus } from "@/app/types/quiz";
+import { Question, QuestionStatus, Score } from "@/app/types/quiz";
 import Choice from "../molecules/Choice";
 
 const Quiz = ({ questions }: { questions: Question[] }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [choices, setChoices] = useState<string[]>([]);
   const [questionStatus, setQuestionStatus] = useState<QuestionStatus>({
     correctAnswer: "",
     isChosen: false,
     isCorrect: false,
   });
-  const [time, setTime] = useState(0);
-  const [score, setScore] = useState({
+  const [time, setTime] = useState<number>(0);
+  const [score, setScore] = useState<Score>({
     total: 0,
     increment: 0,
     hasUpdated: false,
   });
-  const [sessionEnd, setSessionEnd] = useState(false);
+  const [sessionEnd, setSessionEnd] = useState<boolean>(false);
 
   const mixChoices = useCallback(() => {
     const mixedChoices = [
@@ -65,21 +65,21 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
             setScore((prevState) => ({
               ...prevState,
               increment: 50,
-              total: score.total + 50,
+              total: prevState.total + 50,
             }));
             break;
           case "medium":
             setScore((prevState) => ({
               ...prevState,
               increment: 100,
-              total: score.total + 100,
+              total: prevState.total + 100,
             }));
             break;
           default:
             setScore((prevState) => ({
               ...prevState,
               increment: 200,
-              total: score.total + 200,
+              total: prevState.total + 200,
             }));
             break;
         }
@@ -98,7 +98,7 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
         });
       }, 1000);
     },
-    [questions, score.total, currentQuestion, searchParams]
+    [questions, score.total, currentQuestion, searchParams],
   );
 
   useEffect(() => {
@@ -118,7 +118,7 @@ const Quiz = ({ questions }: { questions: Question[] }) => {
     if (highScore)
       localStorage.setItem(
         "high-score",
-        (Number(highScore) + score.total).toString()
+        (Number(highScore) + score.total).toString(),
       );
     else localStorage.setItem("high-score", score.total.toString());
   }, [score.total, sessionEnd]);
